@@ -9,12 +9,21 @@ export function initScope(canvasId) {
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  let W = canvas.offsetWidth || 130;
-  let H = canvas.offsetHeight || 32;
-  const dpr = window.devicePixelRatio || 1;
-  canvas.width  = W * dpr;
-  canvas.height = H * dpr;
-  ctx.scale(dpr, dpr);
+  let W = canvas.offsetWidth || 110;
+  let H = canvas.offsetHeight || 36;
+  let dpr = window.devicePixelRatio || 1;
+
+  function resize() {
+    W = canvas.offsetWidth || 110;
+    H = canvas.offsetHeight || 36;
+    dpr = window.devicePixelRatio || 1;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+  resize();
+  window.addEventListener('resize', resize);
 
   let phase = 0;
   let vel = 0;
@@ -38,12 +47,17 @@ export function initScope(canvasId) {
   canvas.style.cursor = 'pointer';
 
   function draw() {
+    if (W <= 0 || H <= 0) {
+      rafId = requestAnimationFrame(draw);
+      return;
+    }
+
     // CRT phosphor decay trail
-    ctx.fillStyle = 'rgba(11, 29, 26, 0.35)';
+    ctx.fillStyle = 'rgba(6, 19, 17, 0.4)';
     ctx.fillRect(0, 0, W, H);
 
     // Graticule center line
-    ctx.strokeStyle = 'rgba(31, 74, 65, 0.3)';
+    ctx.strokeStyle = 'rgba(0, 255, 178, 0.15)';
     ctx.lineWidth = 0.5;
     ctx.beginPath();
     ctx.moveTo(0, H / 2);
@@ -52,7 +66,7 @@ export function initScope(canvasId) {
     ctx.lineTo(W / 2, H);
     ctx.stroke();
 
-    const signalColor = channel === 1 ? '#d6b266' : channel === 2 ? '#38bdf8' : '#6fe3c1';
+    const signalColor = channel === 1 ? '#d6b266' : channel === 2 ? '#38bdf8' : '#00ffb2';
     ctx.strokeStyle = signalColor;
     ctx.lineWidth = 1.6;
     ctx.shadowBlur = 8;

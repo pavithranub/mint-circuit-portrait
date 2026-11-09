@@ -3,6 +3,7 @@ import { playRelayClick } from './sound.js';
 
 export function initControllers() {
   const tabs       = document.querySelectorAll('.ctrl-tab');
+  const mcuCards   = document.querySelectorAll('.mcu-card');
   const panels     = document.querySelectorAll('.ctrl-panel');
   const chipImg    = document.querySelector('.chip-img-wrap img');
   const badge      = document.querySelector('.chip-badge');
@@ -15,7 +16,7 @@ export function initControllers() {
     stm32: {
       filter: 'hue-rotate(200deg) saturate(1.2) brightness(1.1)',
       badge:  'STM32F103 · 72MHz',
-      color:  '#4a90d9',
+      color:  '#00ffb2',
       arch:   'ARM Cortex-M3 (32-bit)',
       flash:  '64 / 128 KB',
       sram:   '20 KB',
@@ -45,7 +46,7 @@ USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;`,
     esp32: {
       filter: 'hue-rotate(130deg) saturate(1.5) brightness(1.0)',
       badge:  'ESP32-WROOM · 240MHz',
-      color:  '#6fe3c1',
+      color:  '#00ffb2',
       arch:   'Xtensa 32-bit LX6 Dual-Core',
       flash:  '4 MB SPI Flash',
       sram:   '520 KB',
@@ -145,9 +146,14 @@ SYS_LockReg();`,
   }
 
   function activate(id) {
+    if (!controllerData[id]) {
+      // If 'others' is clicked, fallback to nuvoton or stm32
+      id = 'nuvoton';
+    }
     playRelayClick();
     currentId = id;
     tabs.forEach(t => t.classList.toggle('active', t.dataset.ctrl === id));
+    mcuCards.forEach(c => c.classList.toggle('active', c.dataset.ctrl === id));
     panels.forEach(p => p.classList.toggle('active', p.id === `ctrl-${id}`));
     const d = controllerData[id];
     if (chipImg && d) {
@@ -163,6 +169,13 @@ SYS_LockReg();`,
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => activate(tab.dataset.ctrl));
+  });
+
+  mcuCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.ctrl;
+      activate(id);
+    });
   });
 
   subTabs.forEach(st => {
