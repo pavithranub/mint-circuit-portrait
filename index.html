@@ -82,10 +82,10 @@
 ════════════════════════════════════════════════════════════ -->
 <div id="boot-screen" role="status" aria-live="polite" aria-label="Page loading">
   <div class="boot-inner">
-    <p class="boot-header">PAVITHRAN UB DEV BOARD v2.1 — UART CONSOLE</p>
+    <p class="boot-header">PAVITHRAN UB DEV BOARD v3.0 — UART CONSOLE</p>
     <!-- Lines injected by boot.js -->
     <div class="boot-bar"><div class="boot-bar-fill"></div></div>
-    <button class="boot-skip" aria-label="Skip boot animation">skip</button>
+    <button class="boot-skip" aria-label="Skip boot animation">skip →</button>
   </div>
 </div>
 
@@ -98,12 +98,14 @@
     <li><a href="#about">About</a></li>
     <li><a href="#controllers">MCUs</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#fota-sim">FOTA Sim</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <div class="nav-scope-wrap">
-    <canvas id="scope-canvas" aria-hidden="true" title="Live oscilloscope — changes waveform with scroll speed"></canvas>
+    <canvas id="scope-canvas" aria-hidden="true" title="Live DSO Scope — changes waveform with scroll speed (Click to toggle channel)"></canvas>
+    <button class="nav-sound-btn" id="sound-toggle-btn" aria-label="Enable tactile audio" title="Audio Synthesizer (Click to toggle)">🔊</button>
     <button class="nav-terminal-btn" id="open-terminal-btn" aria-label="Open serial terminal (or press backtick)">
       &gt;_ terminal
     </button>
@@ -126,7 +128,8 @@
     </blockquote>
     <div class="hero-cta">
       <a href="#projects" class="btn btn-primary" id="hero-view-work-btn">View Work</a>
-      <a href="#contact"  class="btn btn-ghost"   id="hero-contact-btn">Get in Touch</a>
+      <a href="#fota-sim"  class="btn btn-ghost"   id="hero-fota-btn">Live FOTA Sim</a>
+      <a href="#contact"   class="btn btn-ghost"   id="hero-contact-btn">Get in Touch</a>
       <a href="https://github.com/pavithranub/porfolio/raw/refs/heads/main/Pavithran%20UB.docx"
          class="btn btn-ghost" download id="hero-resume-btn"
          aria-label="Download Pavithran UB resume (Word document)">⬇ Resume</a>
@@ -147,11 +150,17 @@
          alt="Circuit board with a microcontroller and glowing signal traces"
          fetchpriority="high">
     <svg class="hero-svg-overlay" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path class="trace-path" d="M100 300 Q200 200 400 280 T700 260" stroke="#6fe3c1" stroke-width="1.5" opacity="0.6"/>
-      <path class="trace-path" d="M80 400 Q300 380 500 420 T720 400"  stroke="#d6b266" stroke-width="1"   opacity="0.4"/>
+      <path class="trace-path" d="M100 300 Q200 200 400 280 T700 260" stroke="#6fe3c1" stroke-width="1.5" opacity="0.7"/>
+      <path class="trace-path" d="M80 400 Q300 380 500 420 T720 400"  stroke="#d6b266" stroke-width="1"   opacity="0.5"/>
     </svg>
     <canvas id="hero3d-canvas" aria-hidden="true"></canvas>
+
+    <!-- Interactive Test Points -->
+    <button id="tp1-btn" class="tp-marker" style="top:42%;left:38%;" aria-label="Inspect Test Point 1">TP1</button>
+    <button id="tp2-btn" class="tp-marker" style="bottom:35%;right:28%;" aria-label="Inspect Test Point 2">TP2</button>
+    <div id="hero-tp-readout" class="tp-readout-pill" aria-hidden="true"></div>
   </div>
+
   <div class="container" style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);">
     <span class="status-chip" aria-live="polite">SYSTEM RUNNING</span>
   </div>
@@ -182,20 +191,20 @@
           fault handling and task scheduling.
         </p>
       </div>
-      <div class="about-stats reveal">
-        <div class="stat-card">
+      <div class="about-stats">
+        <div class="stat-card reveal">
           <span class="num">6+</span>
-          <span class="label">Projects</span>
+          <span class="label">Projects shipped</span>
         </div>
-        <div class="stat-card">
+        <div class="stat-card reveal">
           <span class="num">9+</span>
-          <span class="label">MCU Families</span>
+          <span class="label">MCU families</span>
         </div>
-        <div class="stat-card">
+        <div class="stat-card reveal">
           <span class="num">3</span>
           <span class="label">Certifications</span>
         </div>
-        <div class="stat-card">
+        <div class="stat-card reveal">
           <span class="num">3+</span>
           <span class="label">Years XP</span>
         </div>
@@ -210,13 +219,13 @@
 <section id="controllers" aria-labelledby="controllers-heading">
   <div class="container">
     <p class="section-label">02 — Controllers Bench</p>
-    <h2 id="controllers-heading" class="reveal">The hardware I speak to.</h2>
+    <h2 id="controllers-heading" class="reveal">The silicon I program at register level.</h2>
     <div class="controllers-bench">
 
       <!-- Sticky chip visual -->
       <div class="chip-stage" aria-hidden="true">
         <div class="chip-img-wrap">
-          <span class="chip-badge">STM32F103</span>
+          <span class="chip-badge">STM32F103 · 72MHz</span>
           <img src="assets/chip-qfp.webp"
                width="1000" height="1000"
                loading="lazy" decoding="async"
@@ -241,7 +250,7 @@
         </div>
 
         <div id="ctrl-stm32" class="ctrl-panel active reveal" role="tabpanel" aria-labelledby="tab-stm32">
-          <h3>STM32 — ARM Cortex-M</h3>
+          <h3>STM32 — ARM Cortex-M3 (32-bit @ 72 MHz)</h3>
           <p>
             FOTA with ESP32 fetching firmware wirelessly and STM32 updating over UART;
             bare metal programming, fault handling, task scheduling; STM32Cube IDE.
@@ -258,10 +267,10 @@
         </div>
 
         <div id="ctrl-esp32" class="ctrl-panel reveal" role="tabpanel" aria-labelledby="tab-esp32">
-          <h3>ESP32 — Xtensa LX6</h3>
+          <h3>ESP32 — Xtensa 32-bit LX6 (Dual-Core @ 240 MHz)</h3>
           <p>
             Wireless firmware retrieval for FOTA; connecting systems to web dashboards for
-            monitoring and control; BLE; IoT applications.
+            monitoring and control; BLE 4.2; IoT edge applications.
           </p>
           <div class="pin-legend" aria-label="Used protocols">
             <span class="pin ble">BLE</span>
@@ -273,7 +282,7 @@
         </div>
 
         <div id="ctrl-pic" class="ctrl-panel reveal" role="tabpanel" aria-labelledby="tab-pic">
-          <h3>PIC — Microchip</h3>
+          <h3>PIC — Microchip (8-bit RISC @ 20 MHz)</h3>
           <p>
             Fully automatic water level controllers with dry-run protection; Embedded C; MPLAB X IDE.
           </p>
@@ -288,16 +297,44 @@
         </div>
 
         <div id="ctrl-nuvoton" class="ctrl-panel reveal" role="tabpanel" aria-labelledby="tab-nuvoton">
-          <h3>Nuvoton</h3>
+          <h3>Nuvoton — 8051 / ARM Cortex-M0 (@ 50 MHz)</h3>
           <p>
-            Second controller family behind the water level controller products installed and
-            deployed at Xpert Automatix.
+            Second controller family behind high-volume industrial water level controller products
+            installed and deployed across customer sites at Xpert Automatix.
           </p>
           <div class="pin-legend" aria-label="Used protocols">
             <span class="pin uart">UART</span>
             <span class="pin gpio">GPIO</span>
             <span class="pin gpio">PWM</span>
             <span class="pin i2c">I2C</span>
+          </div>
+        </div>
+
+        <!-- Sub-tabs: Specs, Pinout, Code -->
+        <div class="ctrl-subtabs">
+          <button class="ctrl-subtab active" data-subtab="specs">Specs &amp; Peripherals</button>
+          <button class="ctrl-subtab" data-subtab="pins">Interactive Pinout</button>
+          <button class="ctrl-subtab" data-subtab="code">Bare-Metal C Code</button>
+        </div>
+
+        <div id="subpanel-specs" class="ctrl-subpanel active">
+          <!-- Default view with details -->
+        </div>
+
+        <div id="subpanel-pins" class="ctrl-subpanel">
+          <p style="font-family:var(--f-mono);font-size:11px;color:var(--mut);margin-bottom:0.5rem;">
+            Click pin to inspect hardware mapping &amp; alternate functions:
+          </p>
+          <div id="chip-pin-inspector" class="pin-grid"></div>
+        </div>
+
+        <div id="subpanel-code" class="ctrl-subpanel">
+          <div class="ctrl-code-box">
+            <div class="ctrl-code-header">
+              <span>REGISTER DIRECT INITIALIZATION (C99)</span>
+              <button id="ctrl-copy-code" class="btn btn-ghost" style="padding:2px 8px;font-size:10px;">Copy C Code</button>
+            </div>
+            <pre><code id="ctrl-code-snippet"></code></pre>
           </div>
         </div>
 
@@ -323,10 +360,18 @@
     <p class="section-label">03 — Projects</p>
     <h2 id="projects-heading" class="reveal">Things I've built.</h2>
 
+    <!-- Category filter buttons -->
+    <div class="project-filters">
+      <button class="project-filter-btn active" data-filter="all">All Builds (6)</button>
+      <button class="project-filter-btn" data-filter="firmware">Firmware / OTA</button>
+      <button class="project-filter-btn" data-filter="iot">IoT &amp; Wireless</button>
+      <button class="project-filter-btn" data-filter="industrial">Industrial &amp; Products</button>
+    </div>
+
     <div class="projects-grid" role="list">
 
       <!-- Card 1: FOTA -->
-      <article class="project-card reveal" role="listitem" tabindex="0" aria-label="Open FOTA System project details">
+      <article class="project-card reveal" data-category="firmware" role="listitem" tabindex="0" aria-label="Open FOTA System project details">
         <div class="card-img-wrap">
           <img src="assets/proj-fota-600.webp"
                srcset="assets/proj-fota-600.webp 600w, assets/proj-fota.webp 1200w"
@@ -337,7 +382,7 @@
           <div class="card-scanline" aria-hidden="true"></div>
         </div>
         <div class="card-body">
-          <p class="card-tag">FIRMWARE · OTA</p>
+          <p class="card-tag">FIRMWARE · OTA ARCHITECTURE</p>
           <h3>FOTA System with STM32</h3>
           <p>Wireless firmware updates via ESP32 over UART with CRC validation and custom bootloader.</p>
           <button class="card-open-btn" aria-label="View FOTA project details">View details →</button>
@@ -345,7 +390,7 @@
       </article>
 
       <!-- Card 2: Star topology -->
-      <article class="project-card reveal" role="listitem" tabindex="0" aria-label="Open Star Topology project details">
+      <article class="project-card reveal" data-category="iot" role="listitem" tabindex="0" aria-label="Open Star Topology project details">
         <div class="card-img-wrap">
           <img src="assets/proj-star-600.webp"
                srcset="assets/proj-star-600.webp 600w, assets/proj-star.webp 1200w"
@@ -356,7 +401,7 @@
           <div class="card-scanline" aria-hidden="true"></div>
         </div>
         <div class="card-body">
-          <p class="card-tag">NETWORK · IOT</p>
+          <p class="card-tag">NETWORK · IOT SYSTEM</p>
           <h3>Star Topology Embedded System</h3>
           <p>Centralised data management with real-time web monitoring and control across 6 nodes.</p>
           <button class="card-open-btn" aria-label="View Star Topology project details">View details →</button>
@@ -364,7 +409,7 @@
       </article>
 
       <!-- Card 3: Water level -->
-      <article class="project-card reveal" role="listitem" tabindex="0" aria-label="Open Water Level Controller project details">
+      <article class="project-card reveal" data-category="industrial" role="listitem" tabindex="0" aria-label="Open Water Level Controller project details">
         <div class="card-img-wrap">
           <img src="assets/proj-water-600.webp"
                srcset="assets/proj-water-600.webp 600w, assets/proj-water.webp 1200w"
@@ -375,7 +420,7 @@
           <div class="card-scanline" aria-hidden="true"></div>
         </div>
         <div class="card-body">
-          <p class="card-tag">EMBEDDED · PRODUCT</p>
+          <p class="card-tag">EMBEDDED PRODUCT · INDUSTRIAL</p>
           <h3>Water Level Controller</h3>
           <p>Fully automatic pump control with dry-run protection using PIC and Nuvoton MCUs.</p>
           <button class="card-open-btn" aria-label="View Water Level Controller project details">View details →</button>
@@ -383,7 +428,7 @@
       </article>
 
       <!-- Card 4: Vehicle theft -->
-      <article class="project-card reveal" role="listitem" tabindex="0" aria-label="Open Vehicle Theft Detection project details">
+      <article class="project-card reveal" data-category="iot" role="listitem" tabindex="0" aria-label="Open Vehicle Theft Detection project details">
         <div class="card-img-wrap">
           <img src="assets/proj-vehicle-600.webp"
                srcset="assets/proj-vehicle-600.webp 600w, assets/proj-vehicle.webp 1200w"
@@ -394,7 +439,7 @@
           <div class="card-scanline" aria-hidden="true"></div>
         </div>
         <div class="card-body">
-          <p class="card-tag">IOT · SECURITY</p>
+          <p class="card-tag">SECURITY · AUTOMOTIVE IOT</p>
           <h3>Vehicle Theft Detection</h3>
           <p>Real-time alerts and remote engine locking via GSM for unauthorised movement.</p>
           <button class="card-open-btn" aria-label="View Vehicle Theft Detection project details">View details →</button>
@@ -402,7 +447,7 @@
       </article>
 
       <!-- Card 5: Smart home -->
-      <article class="project-card reveal" role="listitem" tabindex="0" aria-label="Open Smart Home project details">
+      <article class="project-card reveal" data-category="iot" role="listitem" tabindex="0" aria-label="Open Smart Home project details">
         <div class="card-img-wrap">
           <img src="assets/proj-smarthome-600.webp"
                srcset="assets/proj-smarthome-600.webp 600w, assets/proj-smarthome.webp 1200w"
@@ -413,7 +458,7 @@
           <div class="card-scanline" aria-hidden="true"></div>
         </div>
         <div class="card-body">
-          <p class="card-tag">IOT · SMART HOME</p>
+          <p class="card-tag">IOT · HOME AUTOMATION</p>
           <h3>Smart Home Integration</h3>
           <p>IoT integration of smart bed and smart toilet with BLE + Wi-Fi app control.</p>
           <button class="card-open-btn" aria-label="View Smart Home project details">View details →</button>
@@ -421,7 +466,7 @@
       </article>
 
       <!-- Card 6: Weather -->
-      <article class="project-card reveal" role="listitem" tabindex="0" aria-label="Open Weather Monitoring project details">
+      <article class="project-card reveal" data-category="iot" role="listitem" tabindex="0" aria-label="Open Weather Monitoring project details">
         <div class="card-img-wrap">
           <img src="assets/proj-weather-600.webp"
                srcset="assets/proj-weather-600.webp 600w, assets/proj-weather.webp 1200w"
@@ -432,7 +477,7 @@
           <div class="card-scanline" aria-hidden="true"></div>
         </div>
         <div class="card-body">
-          <p class="card-tag">IOT · MONITORING</p>
+          <p class="card-tag">SENSORS · ENVIRONMENTAL IOT</p>
           <h3>Weather Monitoring System</h3>
           <p>IoT-based real-time data collection with web dashboard for analysis and forecasting.</p>
           <button class="card-open-btn" aria-label="View Weather Monitoring project details">View details →</button>
@@ -448,13 +493,13 @@
 ════════════════════════════════════════════════════════════ -->
 <section id="fota-sim" aria-labelledby="fota-heading">
   <div class="container">
-    <p class="section-label">04 — Interactive</p>
-    <h2 id="fota-heading" class="reveal">FOTA Simulator</h2>
-    <span class="fota-sim-label" aria-label="This is a simulation, not real hardware">⚠ SIMULATION — not real hardware</span>
+    <p class="section-label">04 — Interactive Architecture</p>
+    <h2 id="fota-heading" class="reveal">Live FOTA Pipeline Simulation.</h2>
+    <span class="fota-sim-label" aria-label="This is an interactive simulation">⚠ SIMULATION — ESP32 to STM32 UART Bootloader Pipeline</span>
 
     <div class="fota-stage" aria-label="FOTA simulation diagram">
       <div class="fota-device">
-        <p class="fota-device-name">ESP32</p>
+        <p class="fota-device-name">ESP32 (OTA Receiver)</p>
         <div class="fota-device-icon" aria-hidden="true">📡</div>
         <p class="fota-status" id="fota-esp-status">idle</p>
       </div>
@@ -464,10 +509,10 @@
           <div class="uart-packet">PKT</div>
           <div class="uart-packet">PKT</div>
         </div>
-        <span class="uart-label">UART 115200 baud</span>
+        <span class="uart-label">UART 115200 baud · 8N1</span>
       </div>
       <div class="fota-device">
-        <p class="fota-device-name">STM32</p>
+        <p class="fota-device-name">STM32F103 (Target)</p>
         <div class="fota-device-icon" aria-hidden="true">
           💡 <span id="fota-led" style="color:var(--mut)">⬤</span>
         </div>
@@ -475,9 +520,18 @@
       </div>
     </div>
 
+    <!-- 16 Flash Sector Grid Allocation -->
+    <div class="fota-sector-wrap">
+      <div class="fota-sector-header">
+        <span>STM32 ON-CHIP FLASH MEMORY ALLOCATION (16 SECTORS · 64 KB)</span>
+        <span style="color:var(--sig);font-weight:bold;">CRC-32 ACTIVE</span>
+      </div>
+      <div id="fota-sector-grid" class="fota-sectors"></div>
+    </div>
+
     <div class="fota-progress" role="progressbar" aria-label="FOTA progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
       <div class="fota-progress-label">
-        <span>Firmware transfer</span>
+        <span>Firmware Packet Transfer</span>
         <span id="fota-pct">0%</span>
       </div>
       <div class="fota-bar"><div class="fota-bar-fill" id="fota-bar-fill"></div></div>
@@ -485,8 +539,9 @@
 
     <div class="fota-log" id="fota-log" role="log" aria-live="polite" aria-label="FOTA log output"></div>
 
-    <div class="fota-controls">
-      <button class="btn btn-primary" id="fota-start">▶ Start FOTA</button>
+    <div class="fota-controls" style="display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-primary" id="fota-start">▶ Run Simulation</button>
+      <button class="btn btn-ghost"   id="fota-fault-toggle">Test CRC Fault</button>
       <button class="btn btn-ghost"   id="fota-reset">↺ Reset</button>
     </div>
   </div>
@@ -503,34 +558,33 @@
     <div class="timeline" role="list">
 
       <article class="timeline-item reveal" role="listitem">
-        <p class="timeline-meta">Current · [PLACEHOLDER: add start date]</p>
+        <p class="timeline-meta">Current Role · Full-time</p>
         <h3>Embedded Developer</h3>
         <p class="timeline-company">Xpert Automatix · Coimbatore, Tamil Nadu</p>
         <p>
           Configure and manage network monitoring and performance analysis using SolarWinds to ensure
-          99% uptime and optimise performance and security. Developed and installed water level controller
-          products using PIC and Nuvoton microcontrollers, ensuring efficient water management.
+          99% uptime and optimise performance and security. Engineered and installed commercial water level controller
+          products utilizing PIC and Nuvoton microcontrollers with dry-run protection and fail-safe relay switching.
         </p>
       </article>
 
       <article class="timeline-item reveal" role="listitem">
-        <p class="timeline-meta">[PLACEHOLDER: add dates] · 15 days</p>
+        <p class="timeline-meta">Automotive Internship · 15 days</p>
         <h3>Embedded Systems Trainee</h3>
         <p class="timeline-company">e-Royce Motors India Pvt Ltd</p>
         <p>
-          Gained hands-on experience in embedded systems development, contributing to practical learning
-          and skill development in a professional automotive environment.
+          Gained hands-on experience in automotive embedded systems development, motor controller communication protocols,
+          EV battery telemetry monitoring, and production PCB inspection.
         </p>
       </article>
 
       <article class="timeline-item reveal" role="listitem">
-        <p class="timeline-meta">[PLACEHOLDER: add dates] · Freelance</p>
+        <p class="timeline-meta">Technical Specialist · Freelance</p>
         <h3>Technical Training Specialist</h3>
-        <p class="timeline-company">Freelance</p>
+        <p class="timeline-company">Freelance Embedded Systems Educator</p>
         <p>
-          Delivered technical training on robotics, embedded systems, IoT, PCB design and hardware
-          debugging, specialising in advanced controllers such as STM32. Expertise in low-level firmware
-          and system programming, including bare metal programming, fault handling and task scheduling.
+          Delivered comprehensive hands-on technical training on robotics, embedded C, IoT protocols, KiCad PCB layout, and hardware debugging.
+          Specialized in STM32 ARM Cortex-M architecture, bare-metal register programming, NVIC interrupt handling, and timer PWM.
         </p>
       </article>
 
@@ -544,8 +598,8 @@
 <section id="skills" aria-labelledby="skills-heading">
   <div class="trace-bg" aria-hidden="true"></div>
   <div class="container">
-    <p class="section-label">06 — Skills</p>
-    <h2 id="skills-heading" class="reveal">Tools of the trade.</h2>
+    <p class="section-label">06 — Technical Skills</p>
+    <h2 id="skills-heading" class="reveal">Tools, protocols &amp; lab instrumentation.</h2>
 
     <div class="skills-grid">
       <div class="skill-group reveal">
@@ -556,20 +610,20 @@
           <span class="skill-tag">C++</span>
           <span class="skill-tag">Python</span>
           <span class="skill-tag">SQL</span>
-          <span class="skill-tag">HTML</span>
-          <span class="skill-tag">CSS</span>
+          <span class="skill-tag">HTML5</span>
+          <span class="skill-tag">CSS3</span>
         </div>
       </div>
       <div class="skill-group reveal">
         <p class="skill-group-name">Microcontrollers</p>
         <div class="skill-tags">
-          <span class="skill-tag">STM32</span>
-          <span class="skill-tag">PIC</span>
-          <span class="skill-tag">ESP32</span>
+          <span class="skill-tag">STM32 (Cortex-M)</span>
+          <span class="skill-tag">PIC16F / PIC18F</span>
+          <span class="skill-tag">ESP32 (Dual-Core)</span>
           <span class="skill-tag">ESP8266</span>
           <span class="skill-tag">ESP-01</span>
           <span class="skill-tag">Arduino</span>
-          <span class="skill-tag">Nuvoton</span>
+          <span class="skill-tag">Nuvoton M051</span>
           <span class="skill-tag">MSP430</span>
           <span class="skill-tag">CC3200</span>
         </div>
@@ -578,65 +632,45 @@
         <p class="skill-group-name">Development Tools</p>
         <div class="skill-tags">
           <span class="skill-tag">STM32Cube IDE</span>
-          <span class="skill-tag">Keil IDE</span>
+          <span class="skill-tag">Keil µVision</span>
           <span class="skill-tag">MPLAB X IDE</span>
           <span class="skill-tag">Arduino IDE</span>
-          <span class="skill-tag">CCS</span>
-          <span class="skill-tag">KiCad</span>
+          <span class="skill-tag">Code Composer Studio (CCS)</span>
+          <span class="skill-tag">KiCad EDA</span>
           <span class="skill-tag">Proteus 8</span>
           <span class="skill-tag">Energia</span>
         </div>
       </div>
       <div class="skill-group reveal">
-        <p class="skill-group-name">Communication Protocols</p>
+        <p class="skill-group-name">Protocols &amp; Busses</p>
         <div class="skill-tags">
-          <span class="skill-tag">UART</span>
-          <span class="skill-tag">I2C</span>
-          <span class="skill-tag">SPI</span>
-          <span class="skill-tag">USB</span>
-          <span class="skill-tag">GSM</span>
-          <span class="skill-tag">BLE</span>
-          <span class="skill-tag">RS232</span>
+          <span class="skill-tag">UART / USART</span>
+          <span class="skill-tag">I2C (Fast Mode)</span>
+          <span class="skill-tag">SPI Bus</span>
+          <span class="skill-tag">USB CDC</span>
+          <span class="skill-tag">GSM / GPRS (AT)</span>
+          <span class="skill-tag">BLE 4.2</span>
+          <span class="skill-tag">RS232 / RS485</span>
         </div>
       </div>
       <div class="skill-group reveal">
-        <p class="skill-group-name">Hardware</p>
+        <p class="skill-group-name">Hardware Debugging</p>
         <div class="skill-tags">
-          <span class="skill-tag">Circuit Debugging</span>
-          <span class="skill-tag">PCB Design</span>
-          <span class="skill-tag">Soldering</span>
-          <span class="skill-tag">Oscilloscope</span>
-          <span class="skill-tag">DMM</span>
+          <span class="skill-tag">Digital Storage Scope</span>
+          <span class="skill-tag">Logic Analyzer</span>
+          <span class="skill-tag">Digital Multimeter</span>
+          <span class="skill-tag">SMD Soldering</span>
+          <span class="skill-tag">PCB Layout &amp; Routing</span>
+          <span class="skill-tag">Fault Isolation</span>
         </div>
       </div>
       <div class="skill-group reveal">
-        <p class="skill-group-name">Certifications</p>
-        <div class="certs" style="margin-top:0.5rem">
-          <div class="cert-badge">🏅 ARM Microcontrollers</div>
-          <div class="cert-badge">🏅 PIC Microcontroller</div>
-          <div class="cert-badge">🏅 DBMS (NPTEL)</div>
+        <p class="skill-group-name" style="color:var(--gold);">Certifications</p>
+        <div class="skill-tags">
+          <span class="skill-tag" style="border-color:var(--gold);color:var(--gold);">ARM Microcontrollers</span>
+          <span class="skill-tag" style="border-color:var(--gold);color:var(--gold);">PIC Microcontroller</span>
+          <span class="skill-tag" style="border-color:var(--gold);color:var(--gold);">DBMS (NPTEL Certified)</span>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════
-     EDUCATION
-════════════════════════════════════════════════════════════ -->
-<section id="education" aria-labelledby="edu-heading">
-  <div class="container">
-    <p class="section-label">07 — Education</p>
-    <h2 id="edu-heading" class="reveal">Academic background.</h2>
-
-    <div class="edu-card reveal">
-      <div class="edu-logo-wrap" aria-label="[PLACEHOLDER: PSG Arts and Science College logo not yet provided]">
-        <span style="font-size:0.65rem;text-align:center">PSG<br>Logo<br>[PLACEHOLDER]</span>
-      </div>
-      <div class="edu-details">
-        <h3>Master of Science</h3>
-        <p>Electronics and Communication Systems</p>
-        <p class="edu-meta">PSG Arts &amp; Science College · Coimbatore · 2022 – 2024</p>
       </div>
     </div>
   </div>
@@ -646,83 +680,55 @@
      CONTACT
 ════════════════════════════════════════════════════════════ -->
 <section id="contact" aria-labelledby="contact-heading">
-  <div class="contact-bg" aria-hidden="true">
-    <img src="assets/pcb-wide.webp"
-         width="1920" height="1014"
-         loading="lazy" decoding="async"
-         alt="">
-  </div>
   <div class="container">
-    <p class="section-label">08 — Contact</p>
+    <p class="section-label">07 — Direct Contact</p>
     <div class="contact-grid">
-      <div class="reveal">
-        <h2 id="contact-heading" class="contact-headline">
-          Let's build<br><span>something real.</span>
-        </h2>
-        <div class="contact-links">
-          <a class="contact-link" href="mailto:pavithranub2001@gmail.com" id="contact-email-link">
-            <span class="contact-link-icon" aria-hidden="true">✉</span>
-            <span>
-              <span class="contact-link-label">Email</span>
-              <span class="contact-link-value">pavithranub2001@gmail.com</span>
-            </span>
-          </a>
-          <button class="contact-link" id="copy-phone-btn"
-                  aria-label="Copy phone number to clipboard"
-                  style="cursor:pointer;text-align:left;width:100%">
-            <span class="contact-link-icon" aria-hidden="true">📋</span>
-            <span>
-              <span class="contact-link-label">Phone</span>
-              <span class="contact-link-value">Copy number</span>
-            </span>
-          </button>
-          <a class="contact-link" href="https://www.linkedin.com/in/pavithran-ub"
-             target="_blank" rel="noopener noreferrer" id="contact-linkedin-link">
-            <span class="contact-link-icon" aria-hidden="true">in</span>
-            <span>
-              <span class="contact-link-label">LinkedIn</span>
-              <span class="contact-link-value">pavithran-ub</span>
-            </span>
-          </a>
-          <a class="contact-link" href="https://github.com/pavithranub"
-             target="_blank" rel="noopener noreferrer" id="contact-github-link">
-            <span class="contact-link-icon" aria-hidden="true">⌥</span>
-            <span>
-              <span class="contact-link-label">GitHub</span>
-              <span class="contact-link-value">pavithranub</span>
-            </span>
-          </a>
-          <a class="contact-link btn-primary"
-             href="https://github.com/pavithranub/porfolio/raw/refs/heads/main/Pavithran%20UB.docx"
-             download id="contact-resume-link"
-             style="text-decoration:none"
-             aria-label="Download Pavithran UB resume (Word document)">
-            <span class="contact-link-icon" aria-hidden="true">⬇</span>
-            <span>
-              <span class="contact-link-label">Resume</span>
-              <span class="contact-link-value">Pavithran UB.docx</span>
-            </span>
-          </a>
+      <div class="contact-info reveal">
+        <h2 id="contact-heading">Let's build<br><span>something real.</span></h2>
+        <p>
+          Open to embedded firmware, IoT architecture and hardware debugging opportunities.
+          The fastest way to reach me is email or telephone.
+        </p>
+        <div class="contact-links" role="list">
+          <div class="contact-link" role="listitem">
+            <strong>Email</strong>
+            <a href="mailto:pavithranub2001@gmail.com" class="link-styled">pavithranub2001@gmail.com</a>
+          </div>
+          <div class="contact-link" role="listitem">
+            <strong>Phone</strong>
+            <span>+91 96295 95672</span>
+            <button class="btn btn-ghost" id="copy-phone-btn" style="margin-left:0.5rem;font-size:var(--t-xs);padding:2px 8px;"
+                    aria-label="Copy phone number to clipboard">Copy number</button>
+          </div>
+          <div class="contact-link" role="listitem">
+            <strong>LinkedIn</strong>
+            <a href="https://www.linkedin.com/in/pavithran-ub" class="link-styled"
+               target="_blank" rel="noopener noreferrer">linkedin.com/in/pavithran-ub</a>
+          </div>
+          <div class="contact-link" role="listitem">
+            <strong>GitHub</strong>
+            <a href="https://github.com/pavithranub" class="link-styled"
+               target="_blank" rel="noopener noreferrer">github.com/pavithranub</a>
+          </div>
         </div>
       </div>
 
-      <!-- Mail form -->
-      <div class="reveal">
-        <p class="contact-form-note" role="note">
-          ℹ This form opens your email app (mailto). No message is sent automatically.
-        </p>
-        <form id="contact-form" aria-label="Send email to Pavithran">
+      <div class="contact-form-wrap reveal">
+        <form id="contact-form" novalidate aria-label="Send message to Pavithran">
+          <p style="font-family:var(--f-mono);font-size:var(--t-xs);color:var(--gold);margin-bottom:var(--sp-md);">
+            ℹ Transmit Dispatch: opens your email client directly
+          </p>
           <div class="form-group">
-            <label for="cf-name">Your name</label>
-            <input type="text" id="cf-name" name="name" required autocomplete="name" placeholder="Jane Smith">
+            <label for="cf-name">Your Name</label>
+            <input type="text" id="cf-name" name="name" required placeholder="Engineering Director / Recruiter">
           </div>
           <div class="form-group">
             <label for="cf-subject">Subject</label>
-            <input type="text" id="cf-subject" name="subject" required placeholder="Embedded role — opportunity">
+            <input type="text" id="cf-subject" name="subject" required placeholder="Embedded Firmware Role — Opportunity">
           </div>
           <div class="form-group">
             <label for="cf-message">Message</label>
-            <textarea id="cf-message" name="message" required placeholder="Hi Pavithran, I'd like to discuss…"></textarea>
+            <textarea id="cf-message" name="message" required placeholder="Hi Pavithran, I reviewed your FOTA and STM32 firmware work…"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" id="contact-form-submit-btn">Open Email App →</button>
         </form>
@@ -737,7 +743,7 @@
      FOOTER
 ════════════════════════════════════════════════════════════ -->
 <footer>
-  <span>© 2024 Pavithran U B — Embedded Developer · Coimbatore</span>
+  <span>© 2026 Pavithran U B — Embedded Developer · Coimbatore</span>
   <span class="footer-signal">
     <span class="status-chip" style="font-size:0.65rem">SYSTEM RUNNING</span>
   </span>
@@ -765,13 +771,25 @@
         <p id="modal-hardware"></p>
       </div>
       <div class="modal-field">
-        <h4>Firmware / Software</h4>
+        <h4>Firmware / Architecture</h4>
         <p id="modal-firmware"></p>
       </div>
       <div class="modal-field">
         <h4>Outcome</h4>
         <p id="modal-outcome"></p>
       </div>
+    </div>
+
+    <!-- Signal Flow & Architecture -->
+    <div style="margin-top:1.5rem;background:#06110f;padding:1rem;border-radius:6px;border:1px solid var(--line);">
+      <small style="color:var(--sig);font-family:var(--f-mono);letter-spacing:0.1em;font-weight:bold;">SIGNAL FLOW &amp; PROTOCOL PIPELINE</small>
+      <pre id="modal-arch" style="font-family:var(--f-mono);font-size:11px;color:var(--sig);margin-top:0.5rem;overflow-x:auto;line-height:1.4;white-space:pre-wrap;"></pre>
+    </div>
+
+    <!-- BOM List -->
+    <div style="margin-top:1rem;font-family:var(--f-mono);font-size:12px;">
+      <small style="color:var(--mut);">COMPONENT BILL OF MATERIALS (BOM): </small>
+      <span id="modal-bom" style="color:var(--silk);"></span>
     </div>
   </div>
 </div>
@@ -782,13 +800,13 @@
 <div id="terminal-overlay" role="dialog" aria-modal="true" aria-labelledby="term-title-text">
   <div class="term-header">
     <span class="term-title" id="term-title-text">UART_CONSOLE — /dev/pavithranub · 115200 baud</span>
-    <button class="term-close" aria-label="Close terminal">✕</button>
+    <button class="term-close" id="close-terminal-btn" aria-label="Close terminal">✕</button>
   </div>
   <div id="term-output" class="term-output" aria-live="polite" aria-atomic="false"></div>
   <div class="term-input-wrap">
     <span class="term-prompt" aria-hidden="true">$&gt;</span>
     <input id="term-input" type="text" autocomplete="off" spellcheck="false"
-           aria-label="Terminal command input" placeholder="type help …">
+           aria-label="Terminal command input" placeholder="type help (press Tab to complete) …">
   </div>
 </div>
 
