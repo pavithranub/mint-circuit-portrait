@@ -37,7 +37,7 @@ export function Hero() {
               <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary" />
               <span className="relative h-2 w-2 rounded-full bg-primary" />
             </span>
-            System running · {profile.location}
+            System running · Coimbatore<span className="hidden sm:inline">, Tamil Nadu</span>
           </div>
 
           <h1
