@@ -160,6 +160,8 @@ export function TerminalOverlay({ open, onClose }: { open: boolean; onClose: () 
           <span className="text-primary">$&gt;</span>
           <input
             ref={inputRef}
+            id="term-input"
+            autoFocus
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={onKey}

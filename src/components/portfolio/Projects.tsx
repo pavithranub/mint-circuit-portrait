@@ -82,8 +82,8 @@ export function Projects() {
       <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
         <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto rounded-3xl border-border bg-card p-0 sm:rounded-3xl">
           {selected && (
-            <>
-              <div className="relative aspect-[16/8] overflow-hidden">
+            <div className="block">
+              <div className="relative h-56 overflow-hidden sm:h-80">
                 <img
                   src={selected.img}
                   alt={selected.imgAlt}
@@ -91,7 +91,7 @@ export function Projects() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
               </div>
-              <div className="px-7 pb-8 sm:px-10">
+              <div className="relative -mt-6 px-7 pb-8 sm:px-10">
                 <p className="font-mono text-[0.7rem] uppercase tracking-[0.16em] text-gold">
                   {selected.tag}
                 </p>
@@ -127,7 +127,7 @@ export function Projects() {
                   ))}
                 </div>
               </div>
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>
