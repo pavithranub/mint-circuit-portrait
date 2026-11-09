@@ -1,6 +1,7 @@
-import { Award, Code2, Cpu, Plug, Wrench, Hammer } from "lucide-react";
+import { Award, Code2, Cpu, Plug, Wrench, Hammer, CheckCircle2 } from "lucide-react";
 import { certifications, skillGroups } from "@/data/portfolio";
 import { Reveal, SectionHeading } from "./Reveal";
+import { playRelayClick } from "@/lib/sound";
 
 const icons = [Code2, Cpu, Wrench, Plug, Hammer];
 
@@ -9,34 +10,35 @@ export function Skills() {
     <section
       id="skills"
       aria-labelledby="skills-heading"
-      className="relative border-t border-border bg-mask-deep/50 py-28 sm:py-36"
+      className="relative border-t border-border/80 bg-mask-deep/60 py-24 sm:py-32"
     >
       <div className="absolute inset-0 bg-pcb-grid opacity-30" aria-hidden="true" />
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
           index="06"
-          label="Skills"
-          title={<span id="skills-heading">Tools of the trade.</span>}
+          label="Technical Arsenal & Tooling"
+          title={<span id="skills-heading">Tools, protocols &amp; lab instrumentation.</span>}
         />
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {skillGroups.map((g, i) => {
             const Icon = icons[i % icons.length] ?? Code2;
             return (
               <Reveal
                 key={g.name}
                 delay={(i % 3) * 80}
-                className="group rounded-3xl border border-border bg-card p-7 shadow-card transition-colors hover:border-primary/40"
+                className="group rounded-3xl border border-border/80 bg-card/90 p-7 shadow-card transition-all duration-300 hover:border-primary/50 hover:-translate-y-1 hover:shadow-glow"
               >
-                <div className="mb-5 flex items-center justify-between">
-                  <p className="eyebrow text-[0.65rem] text-foreground">{g.name}</p>
+                <div className="mb-5 flex items-center justify-between border-b border-border/60 pb-3">
+                  <p className="eyebrow text-[0.68rem] text-primary font-bold uppercase tracking-wider">{g.name}</p>
                   <Icon className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-primary" />
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {g.items.map((s) => (
                     <span
                       key={s}
-                      className="rounded-lg border border-border bg-mask-deep/60 px-3 py-1.5 text-sm text-foreground/90 transition-colors hover:border-primary/50 hover:text-primary"
+                      onClick={() => playRelayClick()}
+                      className="cursor-default rounded-lg border border-border/70 bg-mask-deep/70 px-3 py-1.5 font-mono text-xs text-foreground/90 transition-all hover:border-primary/60 hover:text-primary hover:bg-primary/5"
                     >
                       {s}
                     </span>
@@ -46,23 +48,29 @@ export function Skills() {
             );
           })}
 
+          {/* Industry Certifications Card */}
           <Reveal
             delay={160}
-            className="relative overflow-hidden rounded-3xl border border-gold/40 bg-card p-7 shadow-gold"
+            className="relative overflow-hidden rounded-3xl border border-gold/50 bg-card/90 p-7 shadow-gold lg:col-span-1"
           >
-            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/10 blur-2xl" />
-            <div className="relative mb-5 flex items-center justify-between">
-              <p className="eyebrow text-[0.65rem] text-gold">Certifications</p>
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-gold/15 blur-2xl" />
+            <div className="relative mb-5 flex items-center justify-between border-b border-border/60 pb-3">
+              <p className="eyebrow text-[0.68rem] text-gold font-bold uppercase tracking-wider">Verified Certifications</p>
               <Award className="h-4 w-4 text-gold" />
             </div>
-            <ul className="relative space-y-3">
+            <ul className="relative space-y-3" role="list">
               {certifications.map((c) => (
                 <li
-                  key={c}
-                  className="flex items-center gap-3 rounded-xl border border-border bg-mask-deep/60 px-4 py-3 text-sm text-foreground"
+                  key={c.title}
+                  className="rounded-xl border border-border/80 bg-mask-deep/80 p-3.5 transition-colors hover:border-gold/50"
                 >
-                  <span className="h-1.5 w-1.5 rotate-45 bg-gold" />
-                  {c}
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-gold shrink-0" />
+                    <span className="font-semibold text-foreground text-sm">{c.title}</span>
+                  </div>
+                  <p className="mt-1 font-mono text-[0.68rem] text-muted-foreground pl-6">
+                    {c.issuer}
+                  </p>
                 </li>
               ))}
             </ul>
