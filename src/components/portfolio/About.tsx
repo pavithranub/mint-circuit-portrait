@@ -1,87 +1,75 @@
-import { Cpu, Radio, Wrench } from "lucide-react";
+import { Cpu, Network, Cog } from "lucide-react";
 import { stats } from "@/data/portfolio";
 import { Reveal, SectionHeading } from "./Reveal";
 
-const pillars = [
+const featureCards = [
   {
     icon: Cpu,
-    title: "Bare-metal firmware",
-    body: "Registers, interrupts, fault handlers and task scheduling on STM32, PIC and Nuvoton.",
+    title: "Firmware Development",
+    body: "Bare-metal, RTOS, device drivers, communication",
   },
   {
-    icon: Radio,
-    title: "Connected devices",
-    body: "ESP32 Wi-Fi & BLE, GSM alerts and web dashboards for live monitoring and control.",
+    icon: Network,
+    title: "Hardware Integration",
+    body: "PCB bring-up, peripheral interface, system testing",
   },
   {
-    icon: Wrench,
-    title: "Hands on hardware",
-    body: "PCB design in KiCad, soldering, and debugging with oscilloscope and DMM.",
+    icon: Cog,
+    title: "System Development",
+    body: "IoT, remote monitoring, FOTA, field deployment",
   },
 ];
 
 export function About() {
   return (
-    <section id="about" aria-labelledby="about-heading" className="relative py-28 sm:py-36">
+    <section id="about" aria-labelledby="about-heading" className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
           index="01"
           label="About"
           title={
             <span id="about-heading">
-              Embedded systems are <em className="text-gradient-signal">my craft.</em>
+              About <em className="text-gradient-signal">Me</em>
             </span>
           }
         />
 
-        <div className="grid gap-5 lg:grid-cols-12">
-          <Reveal className="rounded-3xl border border-border bg-card-gradient p-8 shadow-card lg:col-span-7 sm:p-10">
-            <div className="space-y-5 text-[1.05rem] leading-relaxed text-muted-foreground">
-              <p>
-                Enthusiastic embedded firmware developer with a solid background in{" "}
-                <span className="text-foreground">Applied Electronics</span>. I enjoy designing and
-                optimising embedded systems, and I'm looking for opportunities to apply my
-                technical expertise, problem-solving and hands-on firmware experience.
-              </p>
-              <p>
-                Based in Coimbatore, I currently work at{" "}
-                <span className="font-medium text-gold">Xpert Automatix</span>, where I develop and
-                deploy microcontroller-based products — from bare-metal firmware to full water-level
-                controller systems installed at customer sites.
-              </p>
-              <p>
-                My training background spans robotics, IoT, PCB design and hardware debugging,
-                including advanced controllers like STM32 and low-level techniques such as
-                bare-metal programming, fault handling and task scheduling.
-              </p>
-            </div>
+        {/* Top 2-Column: Lead Text & Close-Up Chip Image matching Slide 2 */}
+        <div className="grid gap-8 lg:grid-cols-[1.3fr_0.9fr] items-center mb-12">
+          <Reveal className="rounded-3xl border border-border bg-card-gradient p-8 shadow-card sm:p-10">
+            <p className="text-xl sm:text-2xl font-light leading-relaxed text-foreground">
+              I'm an Embedded Electronics Engineer focused on developing firmware, building reliable hardware systems, and integrating them into real-world IoT and industrial solutions.
+            </p>
+            <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
+              Based in Coimbatore, I specialize in architecting register-level firmware, wireless FOTA pipelines, robust sensor topologies, and opto-isolated industrial control electronics across STM32, ESP32, and PIC platforms.
+            </p>
           </Reveal>
 
-          <div className="grid grid-cols-2 gap-5 lg:col-span-5">
-            {stats.map((s, i) => (
-              <Reveal
-                key={s.label}
-                delay={i * 80}
-                className="group relative overflow-hidden rounded-3xl border border-border bg-card p-6 shadow-card transition-colors hover:border-primary/50"
-              >
-                <span className="absolute right-4 top-4 h-2 w-2 rounded-full bg-border transition-colors group-hover:bg-primary" />
-                <p className="font-display text-5xl text-foreground sm:text-6xl">{s.num}</p>
-                <p className="eyebrow mt-3 text-[0.65rem]">{s.label}</p>
-              </Reveal>
-            ))}
-          </div>
+          <Reveal delay={120} className="relative overflow-hidden rounded-3xl border border-primary/30 shadow-glow bg-card">
+            <img
+              src="/assets/about-chip.png"
+              alt="Microcontroller silicon chip close-up with glowing PCB circuit traces"
+              width={504}
+              height={252}
+              loading="lazy"
+              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            />
+          </Reveal>
+        </div>
 
-          {pillars.map((p, i) => (
+        {/* 3 Feature Cards matching Slide 2 */}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {featureCards.map((c, i) => (
             <Reveal
-              key={p.title}
+              key={c.title}
               delay={i * 90}
-              className="rounded-3xl border border-border bg-card/60 p-7 lg:col-span-4"
+              className="rounded-3xl border border-border bg-card p-7 shadow-card transition-all duration-300 hover:border-primary/50 hover:-translate-y-1 hover:shadow-glow flex flex-col gap-3"
             >
-              <span className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl border border-primary/30 bg-primary/10 text-primary">
-                <p.icon className="h-5 w-5" />
+              <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-primary">
+                <c.icon className="h-6 w-6" />
               </span>
-              <h3 className="text-lg font-semibold text-foreground">{p.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+              <h3 className="text-lg font-semibold text-foreground mt-2">{c.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{c.body}</p>
             </Reveal>
           ))}
         </div>

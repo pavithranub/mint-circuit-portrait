@@ -1,9 +1,22 @@
-import { Award, Code2, Cpu, Plug, Wrench, Hammer, CheckCircle2 } from "lucide-react";
-import { certifications, skillGroups } from "@/data/portfolio";
+import { Award, Code2, Cpu, Plug, Wrench, Hammer, CheckCircle2, Wifi, Radio, Bluetooth, Activity, Zap, Settings } from "lucide-react";
+import { certifications, skillGroups, skills10 } from "@/data/portfolio";
 import { Reveal, SectionHeading } from "./Reveal";
 import { playRelayClick } from "@/lib/sound";
 
 const icons = [Code2, Cpu, Wrench, Plug, Hammer];
+
+const badgeIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  code: Code2,
+  settings: Settings,
+  cpu: Cpu,
+  microchip: Cpu,
+  wifi: Wifi,
+  radio: Radio,
+  bluetooth: Bluetooth,
+  activity: Activity,
+  tool: Wrench,
+  zap: Zap,
+};
 
 export function Skills() {
   return (
@@ -16,9 +29,30 @@ export function Skills() {
       <div className="relative mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
           index="06"
-          label="Technical Arsenal & Tooling"
-          title={<span id="skills-heading">Tools, protocols &amp; lab instrumentation.</span>}
+          label="Skills"
+          title={<span id="skills-heading">Technical Skills</span>}
         />
+
+        {/* 10 Skill Badges 5x2 Grid matching Slide 6 */}
+        <div className="mb-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {skills10.map((badge, idx) => {
+            const IconComponent = badgeIconMap[badge.icon] ?? Code2;
+            return (
+              <Reveal
+                key={badge.name}
+                delay={idx * 50}
+                className="group flex flex-col items-center justify-center rounded-2xl border border-border/80 bg-card/90 p-5 text-center shadow-card transition-all duration-300 hover:border-primary/60 hover:-translate-y-1 hover:shadow-glow cursor-default"
+              >
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
+                  <IconComponent className="h-6 w-6" />
+                </div>
+                <span className="font-mono text-sm font-medium text-foreground group-hover:text-primary transition-colors">
+                  {badge.name}
+                </span>
+              </Reveal>
+            );
+          })}
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {skillGroups.map((g, i) => {

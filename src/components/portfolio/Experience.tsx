@@ -5,13 +5,13 @@ import { Reveal, SectionHeading } from "./Reveal";
 
 export function Experience() {
   return (
-    <section id="experience" aria-labelledby="exp-heading" className="relative py-28 sm:py-36">
+    <section id="experience" aria-labelledby="exp-heading" className="relative py-24 sm:py-32">
       <div className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <SectionHeading
             index="05"
             label="Experience"
-            title={<span id="exp-heading">Where I've worked.</span>}
+            title={<span id="exp-heading">Work Experience</span>}
           />
           <Reveal className="rounded-3xl border border-border bg-card-gradient p-7 shadow-card">
             <div className="flex items-start gap-4">
@@ -30,9 +30,9 @@ export function Experience() {
           </Reveal>
         </div>
 
-        <ol className="relative space-y-5 before:absolute before:bottom-6 before:left-[1.15rem] before:top-6 before:w-px before:bg-gradient-to-b before:from-primary before:via-border before:to-transparent">
+        <ol className="relative space-y-6 before:absolute before:bottom-6 before:left-[1.15rem] before:top-6 before:w-px before:bg-gradient-to-b before:from-primary before:via-border before:to-transparent">
           {experience.map((e, i) => (
-            <Reveal as="li" key={e.role} delay={i * 100} className="relative pl-14">
+            <Reveal as="li" key={e.role + e.company} delay={i * 100} className="relative pl-14">
               <span
                 className={cn(
                   "absolute left-2 top-7 flex h-5 w-5 items-center justify-center rounded-full border-2 bg-background",
@@ -42,7 +42,8 @@ export function Experience() {
                 {e.current && <span className="h-2 w-2 rounded-full bg-primary shadow-glow" />}
               </span>
               <article className="rounded-3xl border border-border bg-card p-7 shadow-card transition-colors hover:border-primary/40">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-xl font-semibold text-foreground">{e.role}</h3>
                   <span
                     className={cn(
                       "rounded-full px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.12em]",
@@ -54,9 +55,18 @@ export function Experience() {
                     {e.meta}
                   </span>
                 </div>
-                <h3 className="mt-3 text-xl font-semibold text-foreground">{e.role}</h3>
-                <p className="mt-1 text-sm text-gold">{e.company}</p>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{e.body}</p>
+                <p className="mt-1 text-sm font-medium text-gold">{e.company}</p>
+                {e.bullets && e.bullets.length > 0 ? (
+                  <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                    {e.bullets.map((b, idx) => (
+                      <li key={idx} className="relative pl-4 before:content-['•'] before:absolute before:left-0 before:text-primary">
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{e.body}</p>
+                )}
               </article>
             </Reveal>
           ))}

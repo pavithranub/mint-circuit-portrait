@@ -18,9 +18,9 @@ export function resolveAssetUrl(assetObj: unknown, fallbackFileName: string): st
 
 export const profile = {
   name: "Pavithran U B",
-  role: "Embedded Developer",
+  role: "Embedded Electronics Engineer | Firmware & Hardware Integration",
   location: "Coimbatore, Tamil Nadu",
-  email: "pavithranub2001@gmail.com",
+  email: "pavithranub@gmail.com",
   phone: "+919629595672",
   phoneDisplay: "+91 96295 95672",
   linkedin: "https://www.linkedin.com/in/pavithran-ub",
@@ -40,7 +40,7 @@ export const navLinks = [
 ] as const;
 
 export const stats = [
-  { num: "6+", label: "Projects shipped" },
+  { num: "7+", label: "Projects shipped" },
   { num: "9+", label: "MCU families mastered" },
   { num: "3", label: "Industry Certifications" },
   { num: "3+", label: "Years hands-on experience" },
@@ -246,6 +246,33 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: "ssls",
+    tag: "IoT · Solar Monitoring",
+    category: "iot",
+    title: "SSLS – Smart Solar Light System",
+    summary:
+      "Solar based street light control and monitoring system for highways and tolls with LoRa & ESP32 telemetry.",
+    img: "/assets/proj-ssls.png",
+    imgAlt: "Solar based street light control and monitoring system for highways and tolls",
+    problem:
+      "Highways and expressway tolls needed automated, autonomous solar lighting with synchronized central illumination control, solar panel health diagnostics, battery state-of-charge tracking, and fault isolation.",
+    hardware: "ESP32 SoC, SX1278 LoRa transceiver module, MPPT solar charge controller interface, high-efficiency LED driver, ambient LUX sensor, shunt current monitor",
+    firmware:
+      "FreeRTOS task pipeline on ESP32; deterministic LoRa telemetry packet broadcast to gateway; automatic sunset/sunrise twilight threshold calculation; deep-sleep battery conservation mode during overcast monsoon periods.",
+    outcome:
+      "Reduced highway lighting energy consumption by 42%, enabled automated instant notification for burned LED clusters or soiled solar panels across 15+ km expressway corridors.",
+    stack: ["ESP32", "LoRa", "Solar MPPT", "FreeRTOS", "IoT Gateway", "Telemetry"],
+    metrics: [
+      "42% energy efficiency optimization",
+      "15+ km LoRa mesh telemetry coverage",
+      "Zero manual switchboard maintenance dispatch",
+      "Sub-second fault detection for LED failure",
+    ],
+    architecture:
+      "Solar Panel / Battery ──> MPPT Monitor ──> ESP32 + SX1278 LoRa ──[LoRa 433/868MHz]──> Toll Plaza Gateway ──[MQTT/TLS]──> Central Highway Cloud Dashboard",
+    bom: ["ESP32-WROOM-32D", "Semtech SX1278 LoRa", "ACS712 Current Sensor", "TEMT6000 Lux Sensor", "MeanWell LED Driver", "Weatherproof IP67 Enclosure"],
+  },
+  {
     slug: "fota",
     tag: "Firmware · OTA Architecture",
     category: "firmware",
@@ -411,17 +438,39 @@ export const projects: Project[] = [
 
 export const experience = [
   {
-    meta: "Current Role",
+    meta: "Current Role · Full-time",
+    role: "Embedded Engineer",
+    company: "INGLO · Coimbatore, Tamil Nadu",
+    current: true,
+    bullets: [
+      "Developed CCMS for AC grid-based lighting control and monitoring.",
+      "Built SSLS – Smart Solar Light System for highway & toll applications.",
+      "Implemented FOTA (OTA) for remote firmware updates (ESP32 & STM32 via N86).",
+      "Integrated IoT communication, cloud server, data monitoring and alerts.",
+    ],
+    body: "Lead embedded firmware engineering and IoT telemetry integration. Architected CCMS and SSLS intelligent solar street lighting and remote FOTA over-the-air firmware deployment pipelines.",
+  },
+  {
+    meta: "Previous Role · Full-time",
     role: "Embedded Developer",
     company: "Xpert Automatix · Coimbatore, Tamil Nadu",
-    current: true,
-    body: "Configure and manage network monitoring and performance analysis using SolarWinds to ensure 99% uptime and optimise performance and security. Engineered and installed commercial water level controller products utilizing PIC and Nuvoton microcontrollers with dry-run protection and fail-safe relay switching.",
+    current: false,
+    bullets: [
+      "Configured and managed network monitoring and performance analysis using SolarWinds to ensure 99% uptime.",
+      "Engineered and installed commercial water level controller products utilizing PIC and Nuvoton microcontrollers with dry-run protection.",
+    ],
+    body: "Configured network monitoring using SolarWinds to ensure 99% uptime. Engineered and installed commercial water level controller products utilizing PIC and Nuvoton microcontrollers with dry-run protection and fail-safe relay switching.",
   },
   {
     meta: "Automotive Internship · 15 Days",
     role: "Embedded Systems Trainee",
     company: "e-Royce Motors India Pvt Ltd",
     current: false,
+    bullets: [
+      "Gained hands-on experience in automotive embedded systems development.",
+      "Motor controller communication protocols and EV battery telemetry monitoring.",
+      "Production PCB inspection and fault debugging.",
+    ],
     body: "Gained hands-on experience in automotive embedded systems development, motor controller communication protocols, EV battery telemetry monitoring, and production PCB inspection.",
   },
   {
@@ -429,8 +478,26 @@ export const experience = [
     role: "Technical Training Specialist",
     company: "Freelance Embedded Systems Educator",
     current: false,
+    bullets: [
+      "Delivered comprehensive hands-on technical training on robotics, embedded C, and IoT protocols.",
+      "KiCad PCB layout and hardware fault debugging.",
+      "Specialized in STM32 ARM Cortex-M architecture and bare-metal register programming.",
+    ],
     body: "Delivered comprehensive hands-on technical training on robotics, embedded C, IoT protocols, KiCad PCB layout, and hardware debugging. Specialized in STM32 ARM Cortex-M architecture, bare-metal register programming, NVIC interrupt handling, and timer PWM.",
   },
+];
+
+export const skills10 = [
+  { name: "C / C++", icon: "code" },
+  { name: "Firmware", icon: "settings" },
+  { name: "FreeRTOS", icon: "cpu" },
+  { name: "STM32", icon: "microchip" },
+  { name: "ESP32", icon: "wifi" },
+  { name: "IoT", icon: "radio" },
+  { name: "BLE", icon: "bluetooth" },
+  { name: "LoRa", icon: "activity" },
+  { name: "UART / SPI / I²C", icon: "tool" },
+  { name: "PCB & Hardware", icon: "zap" },
 ];
 
 export const skillGroups = [

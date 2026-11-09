@@ -31,7 +31,7 @@ export function Projects() {
           {/* Category Filter Tabs */}
           <div className="flex flex-wrap gap-1.5 rounded-full border border-border/80 bg-card/80 p-1.5 backdrop-blur font-mono text-xs">
             {[
-              { id: "all", label: "All Builds (6)" },
+              { id: "all", label: `All Builds (${projects.length})` },
               { id: "firmware", label: "Firmware / OTA" },
               { id: "iot", label: "IoT & Wireless" },
               { id: "industrial", label: "Industrial & Products" },
