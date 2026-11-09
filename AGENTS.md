@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- Portfolio content (projects, skills, experience, contact details) lives in `src/data/portfolio.ts`; components in `src/components/portfolio/` only render it — edit copy in one place.
+- The site is a single dark "PCB bench" theme defined entirely by tokens in `src/styles.css`; no light mode, no hardcoded colors in components.
+- Images are Lovable Assets pointers in `src/assets/*.asset.json`; never commit raw image binaries for page media.
