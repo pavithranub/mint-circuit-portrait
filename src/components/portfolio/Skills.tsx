@@ -21,7 +21,7 @@ export function Skills() {
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {skillGroups.map((g, i) => {
-            const Icon = icons[i % icons.length];
+            const Icon = icons[i % icons.length] ?? Code2;
             return (
               <Reveal
                 key={g.name}

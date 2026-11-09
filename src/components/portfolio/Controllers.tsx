@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { BadgeCheck } from "lucide-react";
 import chipImg from "@/assets/chip-qfp.webp.asset.json";
-import { alsoWorkedWith, controllers } from "@/data/portfolio";
+import { alsoWorkedWith, controllers, type Controller } from "@/data/portfolio";
 import { cn } from "@/lib/utils";
 import { Reveal, SectionHeading } from "./Reveal";
 
 export function Controllers() {
-  const [activeId, setActiveId] = useState(controllers[0].id);
-  const active = controllers.find((c) => c.id === activeId) ?? controllers[0];
+  const first = controllers[0] as Controller;
+  const [activeId, setActiveId] = useState(first.id);
+  const active = controllers.find((c) => c.id === activeId) ?? first;
 
   return (
     <section

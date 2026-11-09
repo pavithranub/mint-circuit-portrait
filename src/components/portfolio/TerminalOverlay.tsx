@@ -103,7 +103,7 @@ export function TerminalOverlay({ open, onClose }: { open: boolean; onClose: () 
     } else if (e.key === "ArrowDown") {
       const i = Math.max(histIdx - 1, -1);
       setHistIdx(i);
-      setValue(i === -1 ? "" : history[i]);
+      setValue(i === -1 ? "" : (history[i] ?? ""));
     } else if (e.key === "Escape") {
       onClose();
     }
