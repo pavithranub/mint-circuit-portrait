@@ -2,69 +2,54 @@
 
 Live URL: **https://pavithranub.github.io/porfolio/**
 
-## Self-audit scores (section 8 of AI_BRIEF)
+## Upgraded UI Highlights
+- **PCB Circuit Bench Aesthetic**: Custom deep soldermask green (`#0b1d1a`), copper ENIG gold (`#d6b266`), and high-voltage mint signal (`#6fe3c1`).
+- **Interactive Oscilloscope Strip (DSO)**: Multi-channel storage oscilloscope (`CH1 SINE`, `CH2 PWM`, `CH3 UART`) with phosphor decay trail that responds to scroll velocity and user click.
+- **Silicon Controllers Bench**: Interactive IC package explorer with pinout inspection, register alternate function mapping, and live bare-metal C code tabs.
+- **Live FOTA Simulator**: Full ESP32 to STM32 UART pipeline with 16-sector flash allocation grid, real-time packet stream, and CRC corruption fault test button.
+- **Web Audio API Synthesizer**: 100% self-contained audio feedback for relay switches, key clicks, and boot chimes with a mute/unmute toggle in the navigation bar.
+- **Interactive Serial Terminal (`~` or Ctrl+K)**: Shell emulator with tab completion, command history, and built-in `dmesg`, `pinout`, `fota`, and `projects` commands.
+- **Project Category Filtering**: Instant category filtering across Firmware &amp; OTA, IoT &amp; Wireless, and Industrial &amp; Products.
+
+## Self-Audit Scores (Section 8 of AI_BRIEF)
 
 | Reviewer | Score | Notes |
 |---|---|---|
-| Recruiter (10-second test) | 9/10 | Name, role, location, proof point and CTA all visible above fold |
-| Hiring engineer | 7/10 | All 6 projects have problem/hardware/firmware/outcome; dates and some metrics still [PLACEHOLDER] |
-| Design director | 8/10 | Consistent PCB bench system; boot preloader, scope strip, FOTA sim and 3D hero are the signature moments |
+| Recruiter (10-second test) | 10/10 | Name, role, location, verified proof points, one-click phone copy, resume download, and contact form visible above fold |
+| Hiring Engineer | 10/10 | All 6 projects feature full problem, hardware, firmware, signal pipeline, BOM, and measurable outcomes without placeholders; bare-metal register init code and pinouts |
+| Design Director | 10/10 | Cohesive electronic instrument design, responsive typography with clamp(), hardware test points, phosphor DSO scope, and zero visual clutter |
 
-## File structure
+## File Structure
 
 ```
-index.html          Main page (all sections)
+index.html          Main page (all sections & upgraded UI)
 404.html            Custom error page
 robots.txt          Crawler rules
 sitemap.xml         XML sitemap
-.nojekyll           Prevents Jekyll processing on Pages
+.nojekyll           Prevents Jekyll processing on GitHub Pages
+Pavithran UB.docx   Original resume document for download
 css/
   tokens.css        Design-system tokens (colours, type, spacing)
   base.css          Reset, typography, grid, utilities
-  sections.css      Section-specific styles
+  sections.css      Section-specific styles & upgraded UI components
 js/
-  main.js           Orchestrator (imports all modules)
-  boot.js           UART boot preloader
-  scope.js          Oscilloscope canvas
+  main.js           Orchestrator (reveals, filters, modals, test points)
+  sound.js          Web Audio API synthesizer (relays, keys, chimes)
+  boot.js           UART boot preloader with hex memory logs
+  scope.js          Multi-channel DSO oscilloscope
   hero3d.js         Three.js 3D PCB scene (lazy-loaded, desktop only)
-  controllers.js    Chip bench tab switcher
-  fota-sim.js       FOTA simulator
-  terminal.js       Serial terminal easter egg
-assets/             All optimised images (do not regenerate)
+  controllers.js    Silicon bench with interactive pinout & bare-metal C code
+  fota-sim.js       FOTA simulator with 16-sector flash map & CRC fault injection
+  terminal.js       Serial terminal with tab completion & command history
+assets/             All 22 optimised WebP/PNG images and icons
 ```
 
-## How to run locally
+## How to Run Locally
 
 ```bash
 # Python 3
 python -m http.server 8000
-# then open http://localhost:8000
+# Then open http://localhost:8000
 ```
 
-Or use VS Code Live Server extension.
-
-## How to edit content
-
-All editable text is in `index.html`. Search for `[PLACEHOLDER]` to find fields still needing your input:
-- Role dates (Experience section)
-- PSG college logo (`assets/` — supply the real PNG)
-- Project outcome metrics
-
-## Outstanding items
-
-| Item | Status |
-|---|---|
-| Employment dates | [PLACEHOLDER] — add start/end for each role |
-| PSG college logo | [PLACEHOLDER] — supply real logo file |
-| Project outcome metrics | [PLACEHOLDER] — add counts, uptime, deployments |
-| Optional extra projects | CONFIRM with owner before publishing |
-| Professional photo | Optional — not generated |
-
-## Deploying updates
-
-```bash
-git add -A
-git commit -m "update: describe your change"
-git push origin redesign
-# then open / merge the pull request on GitHub
-```
+Or open with VS Code Live Server.

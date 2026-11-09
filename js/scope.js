@@ -1,39 +1,62 @@
-/* scope.js – Live oscilloscope strip in the nav */
-export function initScope(canvasId = 'scope-canvas') {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+/* scope.js – Live Digital Storage Oscilloscope (DSO) strip with multi-channel selection */
+import { playRelayClick } from './sound.js';
 
+export function initScope(canvasId) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // HiDPI
-  const W = canvas.offsetWidth || 120;
-  const H = canvas.offsetHeight || 36;
-  canvas.width  = W * devicePixelRatio;
-  canvas.height = H * devicePixelRatio;
-  ctx.scale(devicePixelRatio, devicePixelRatio);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  let W = canvas.offsetWidth || 130;
+  let H = canvas.offsetHeight || 32;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width  = W * dpr;
+  canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
 
   let phase = 0;
-  let scrollVel = 0;
-  let lastScroll = 0;
-  let raf;
-  let paused = false;
-
-  const obs = new IntersectionObserver(([e]) => { paused = !e.isIntersecting; });
-  obs.observe(canvas);
+  let vel = 0;
+  let lastY = window.scrollY;
+  let rafId = 0;
+  let channel = 0; // 0: Analog Sine, 1: PWM Clock, 2: UART Data Burst
+  const chNames = ['CH1 SINE', 'CH2 PWM', 'CH3 UART'];
 
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
-    scrollVel = Math.abs(y - lastScroll);
-    lastScroll = y;
+    vel = Math.min(Math.abs(y - lastY), 30);
+    lastY = y;
   }, { passive: true });
 
+  function cycleChannel() {
+    playRelayClick();
+    channel = (channel + 1) % 3;
+    canvas.title = `Live DSO Scope — Current: ${chNames[channel]} (Click to switch)`;
+  }
+  canvas.addEventListener('click', cycleChannel);
+  canvas.style.cursor = 'pointer';
+
   function draw() {
-    ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = '#6fe3c1';
-    ctx.lineWidth   = 1.5;
-    ctx.shadowBlur  = 6;
-    ctx.shadowColor = '#6fe3c1';
+    // CRT phosphor decay trail
+    ctx.fillStyle = 'rgba(11, 29, 26, 0.35)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Graticule center line
+    ctx.strokeStyle = 'rgba(31, 74, 65, 0.3)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(0, H / 2);
+    ctx.lineTo(W, H / 2);
+    ctx.moveTo(W / 2, 0);
+    ctx.lineTo(W / 2, H);
+    ctx.stroke();
+
+    const signalColor = channel === 1 ? '#d6b266' : channel === 2 ? '#38bdf8' : '#6fe3c1';
+    ctx.strokeStyle = signalColor;
+    ctx.lineWidth = 1.6;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = signalColor;
     ctx.beginPath();
 
     const mid = H / 2;
@@ -41,30 +64,46 @@ export function initScope(canvasId = 'scope-canvas') {
 
     for (let x = 0; x < W; x++) {
       const t = (x / W) * Math.PI * 4 + phase;
-      let y;
+      let y = mid;
 
-      if (scrollVel > 12) {
-        // PWM – fast scroll
-        const duty = 0.25;
-        const period = Math.PI;
-        y = mid - ((t % period < period * duty) ? amp : -amp);
-      } else if (scrollVel > 3) {
-        // Square wave – scrolling
-        y = mid - (Math.sin(t) > 0 ? amp : -amp);
+      if (channel === 0) {
+        if (vel > 15) {
+          y = mid - (t % (Math.PI * 0.8) < Math.PI * 0.4 ? amp : -amp);
+        } else if (vel > 4) {
+          y = mid - (Math.sin(t) > 0 ? amp * 0.85 : -amp * 0.85);
+        } else {
+          y = mid - Math.sin(t) * amp;
+        }
+      } else if (channel === 1) {
+        const duty = 0.35 + Math.sin(phase * 0.5) * 0.25;
+        const cycle = (t % (Math.PI * 2)) / (Math.PI * 2);
+        y = cycle < duty ? mid - amp * 0.9 : mid + amp * 0.9;
       } else {
-        // Sine – at rest
-        y = mid - Math.sin(t) * amp;
+        const bitIndex = Math.floor((t + phase) * 2) % 10;
+        const bitVal = (0b10100110 >> bitIndex) & 1;
+        y = bitVal ? mid - amp * 0.85 : mid + amp * 0.85;
       }
 
-      x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
     }
     ctx.stroke();
 
-    if (!paused) phase += 0.07;
-    scrollVel *= 0.85;
-    raf = requestAnimationFrame(draw);
+    phase += 0.08 + (vel * 0.01);
+    vel *= 0.92;
+    rafId = requestAnimationFrame(draw);
   }
 
+  // Handle visibility change to save CPU
+  const observer = new IntersectionObserver(([entry]) => {
+    if (entry.isIntersecting) {
+      if (!rafId) rafId = requestAnimationFrame(draw);
+    } else {
+      cancelAnimationFrame(rafId);
+      rafId = 0;
+    }
+  });
+  observer.observe(canvas);
+
   draw();
-  return () => { cancelAnimationFrame(raf); obs.disconnect(); };
 }
